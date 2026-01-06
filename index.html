@@ -1,85 +1,65 @@
+
 <!DOCTYPE html>
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Impact Score</title>
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#111111">
-
+  <meta name="theme-color" content="#111111">
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont;
-      background: #f5f5f5;
-    }
-
-    header {
-      background: #111;
-      color: white;
-      padding: 16px;
-      text-align: center;
-      font-weight: 600;
-      font-size: 18px;
-    }
-
-    .container {
-      padding: 12px;
-    }
-
-    .news-card {
-      background: white;
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 10px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .score {
-      font-weight: bold;
-      color: #b00020;
-      margin-bottom: 6px;
-    }
-
-    .title {
-      font-size: 16px;
-      margin-bottom: 6px;
-    }
-
-    .meta {
-      font-size: 12px;
-      color: #666;
-    }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; }
   </style>
 </head>
-
 <body>
+  <h1>Top 25 Știri cu Impact Score</h1>
+  <div id="news-container"></div>
 
-<header>
-  Impact Score — Top 25 Global News
-</header>
+  <script>
+    const topNews = [
+      { title: "SUA anunță noi sancțiuni economice globale", score: 92 },
+      { title: "Criza energetică în Europa se adâncește", score: 88 },
+      { title: "Alegeri parlamentare în Germania: rezultate preliminare", score: 85 },
+      { title: "China lansează misiune spațială pentru explorarea Lunii", score: 83 },
+      { title: "Inflația globală continuă să crească", score: 81 },
+      { title: "NATO anunță exerciții militare majore în Marea Nordului", score: 80 },
+      { title: "Intel anunță noi tehnologii pentru procesoare AI", score: 78 },
+      { title: "Furtuni și inundații severe afectează Asia de Sud", score: 77 },
+      { title: "Rusia testează sisteme noi de rachete", score: 76 },
+      { title: "Criza refugiaților continuă în Orientul Mijlociu", score: 75 },
+      { title: "Tesla lansează modelul electric cu autonomie record", score: 74 },
+      { title: "India dezvoltă program național de energie solară", score: 73 },
+      { title: "Influența inteligenței artificiale în finanțe crește", score: 72 },
+      { title: "Proteste masive în America Latină", score: 71 },
+      { title: "Economie globală: analiza piețelor bursiere", score: 70 },
+      { title: "Noi reguli de reglementare a criptomonedelor în UE", score: 69 },
+      { title: "Vaccinuri noi împotriva virusurilor sezoniere", score: 68 },
+      { title: "Creșterea prețului petrolului afectează transportul global", score: 67 },
+      { title: "Tehnologii verzi pentru reducerea emisiilor", score: 66 },
+      { title: "Turismul global începe să se redreseze", score: 65 },
+      { title: "Schimbări climatice: raportul ONU 2026", score: 64 },
+      { title: "Inteligența artificială în educație: noi aplicații", score: 63 },
+      { title: "Sistemul financiar internațional sub presiune", score: 62 },
+      { title: "Descoperiri științifice majore în fizică", score: 61 },
+      { title: "Proiecte de infrastructură masivă în Africa", score: 60 }
+    ];
 
-<div class="container">
+    const container = document.getElementById('news-container');
+    topNews.sort((a, b) => b.score - a.score); // cele mai importante sus
 
-  <div class="news-card">
-    <div class="score">Impact Score: 87</div>
-    <div class="title">Fed signals potential interest rate cuts in 2026</div>
-    <div class="meta">Economy · Reuters · 3h ago</div>
-  </div>
-
-  <div class="news-card">
-    <div class="score">Impact Score: 82</div>
-    <div class="title">Escalation risk rises after Red Sea shipping attacks</div>
-    <div class="meta">Geopolitics · AP · 5h ago</div>
-  </div>
-
-  <div class="news-card">
-    <div class="score">Impact Score: 76</div>
-    <div class="title">China announces new export controls on AI chips</div>
-    <div class="meta">Technology · Bloomberg · 6h ago</div>
-  </div>
-
-</div>
-
+    topNews.forEach(news => {
+      const card = document.createElement('div');
+      card.style.border = "1px solid #ccc";
+      card.style.margin = "10px";
+      card.style.padding = "10px";
+      card.style.borderRadius = "8px";
+      card.style.backgroundColor = "#fff";
+      card.innerHTML = `
+        <h3>${news.title}</h3>
+        <p><strong>Impact Score:</strong> ${news.score}</p>
+      `;
+      container.appendChild(card);
+    });
+  </script>
 </body>
 </html>
