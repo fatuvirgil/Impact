@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Impact Score</title>
+  <title>Impact Score Live AI</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#111111">
   <style>
@@ -21,45 +21,53 @@
   </style>
 </head>
 <body>
-  <h1>Top 25 Știri cu Impact Score</h1>
-  <button id="refresh-btn">Regenerate Real Scores</button>
+  <h1>Top 25 Știri Live cu Impact Score AI</h1>
+  <button id="refresh-btn">Regenerate Scores</button>
   <div id="news-container"></div>
 
   <script>
-    const topNews = [
-      { title: "SUA anunță noi sancțiuni economice globale", score: 92 },
-      { title: "Criza energetică în Europa se adâncește", score: 88 },
-      { title: "Alegeri parlamentare în Germania: rezultate preliminare", score: 85 },
-      { title: "China lansează misiune spațială pentru explorarea Lunii", score: 83 },
-      { title: "Inflația globală continuă să crească", score: 81 },
-      { title: "NATO anunță exerciții militare majore în Marea Nordului", score: 80 },
-      { title: "Intel anunță noi tehnologii pentru procesoare AI", score: 78 },
-      { title: "Furtuni și inundații severe afectează Asia de Sud", score: 77 },
-      { title: "Rusia testează sisteme noi de rachete", score: 76 },
-      { title: "Criza refugiaților continuă în Orientul Mijlociu", score: 75 },
-      { title: "Tesla lansează modelul electric cu autonomie record", score: 74 },
-      { title: "India dezvoltă program național de energie solară", score: 73 },
-      { title: "Influența inteligenței artificiale în finanțe crește", score: 72 },
-      { title: "Proteste masive în America Latină", score: 71 },
-      { title: "Economie globală: analiza piețelor bursiere", score: 70 },
-      { title: "Noi reguli de reglementare a criptomonedelor în UE", score: 69 },
-      { title: "Vaccinuri noi împotriva virusurilor sezoniere", score: 68 },
-      { title: "Creșterea prețului petrolului afectează transportul global", score: 67 },
-      { title: "Tehnologii verzi pentru reducerea emisiilor", score: 66 },
-      { title: "Turismul global începe să se redreseze", score: 65 },
-      { title: "Schimbări climatice: raportul ONU 2026", score: 64 },
-      { title: "Inteligența artificială în educație: noi aplicații", score: 63 },
-      { title: "Sistemul financiar internațional sub presiune", score: 62 },
-      { title: "Descoperiri științifice majore în fizică", score: 61 },
-      { title: "Proiecte de infrastructură masivă în Africa", score: 60 }
-    ];
-
     const container = document.getElementById('news-container');
     const refreshBtn = document.getElementById('refresh-btn');
 
-    function generateRealScores() {
+    // === Modifică aici cheia ta NewsAPI ===
+    const NEWS_API_KEY = "f343dbe064bf474f9e121aa78e47e3a4";
+
+    async function fetchNews() {
+      const res = await fetch(`https://newsapi.org/v2/top-headlines?language=en&pageSize=25&apiKey=${NEWS_API_KEY}`);
+      const data = await res.json();
+      return data.articles.map(article => ({
+        title: article.title,
+        content: article.description || "",
+        score: 0
+      }));
+    }
+
+    // === Modifică aici IP-ul calculatorului tău cu backend-ul ===
+    const BACKEND_URL = "http://10.13.81.83:3000/score";
+
+    async function getAIScore(title, content) {
+      try {
+        const res = await fetch(BACKEND_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, content })
+        });
+        const data = await res.json();
+        return data.score;
+      } catch (e) {
+        console.error(e);
+        return 50; // fallback dacă serverul nu răspunde
+      }
+    }
+
+    async function generateScores() {
       container.innerHTML = "";
-      topNews.forEach(news => {
+      const topNews = await fetchNews();
+
+      for (let news of topNews) {
+        news.score = await getAIScore(news.title, news.content);
+
+        // Simulare scor real pentru feedback
         news.realScore = Math.max(0, Math.min(100, news.score + (Math.floor(Math.random() * 31) - 15)));
         if (news.realScore > news.score + 5) {
           news.feedback = "Underestimated";
@@ -68,7 +76,7 @@
         } else {
           news.feedback = "Accurate";
         }
-      });
+      }
 
       topNews.sort((a, b) => b.score - a.score);
 
@@ -85,12 +93,8 @@
       });
     }
 
-    // Prima generare la încărcare
-    generateRealScores();
-
-    // Re-generate când dai click pe buton
-    refreshBtn.addEventListener('click', generateRealScores);
+    generateScores();
+    refreshBtn.addEventListener('click', generateScores);
   </script>
 </body>
 </html>
-
