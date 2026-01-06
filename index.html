@@ -10,17 +10,22 @@
     body { font-family: Arial, sans-serif; background: #f5f5f5; margin:0; padding:0; }
     h1 { text-align: center; padding: 20px 0; }
     #news-container { max-width: 800px; margin: auto; padding: 10px; }
-    .card { border: 1px solid #ccc; margin: 10px 0; padding: 10px; border-radius: 8px; background-color: #fff; }
+    .card { border: 1px solid #ccc; margin: 10px 0; padding: 10px; border-radius: 8px; background-color: #fff; transition: 0.3s; }
     .card h3 { margin: 0 0 5px; }
     .card p { margin: 3px 0; }
+    .feedback-Accurate { color: green; font-weight: bold; }
+    .feedback-Overestimated { color: red; font-weight: bold; }
+    .feedback-Underestimated { color: blue; font-weight: bold; }
+    #refresh-btn { display: block; margin: 10px auto; padding: 10px 20px; font-size: 16px; border-radius: 8px; cursor: pointer; background-color: #111; color: #fff; border: none; }
+    #refresh-btn:hover { background-color: #333; }
   </style>
 </head>
 <body>
   <h1>Top 25 Știri cu Impact Score</h1>
+  <button id="refresh-btn">Regenerate Real Scores</button>
   <div id="news-container"></div>
 
   <script>
-    // Top 25 știri mock
     const topNews = [
       { title: "SUA anunță noi sancțiuni economice globale", score: 92 },
       { title: "Criza energetică în Europa se adâncește", score: 88 },
@@ -50,34 +55,42 @@
     ];
 
     const container = document.getElementById('news-container');
+    const refreshBtn = document.getElementById('refresh-btn');
 
-    // Sortează descrescător după Impact Score prezis
-    topNews.sort((a, b) => b.score - a.score);
+    function generateRealScores() {
+      container.innerHTML = "";
+      topNews.forEach(news => {
+        news.realScore = Math.max(0, Math.min(100, news.score + (Math.floor(Math.random() * 31) - 15)));
+        if (news.realScore > news.score + 5) {
+          news.feedback = "Underestimated";
+        } else if (news.realScore < news.score - 5) {
+          news.feedback = "Overestimated";
+        } else {
+          news.feedback = "Accurate";
+        }
+      });
 
-    // Simulare impact real și feedback
-    topNews.forEach(news => {
-      news.realScore = Math.max(0, Math.min(100, news.score + (Math.floor(Math.random() * 31) - 15)));
-      if (news.realScore > news.score + 5) {
-        news.feedback = "Underestimated";
-      } else if (news.realScore < news.score - 5) {
-        news.feedback = "Overestimated";
-      } else {
-        news.feedback = "Accurate";
-      }
-    });
+      topNews.sort((a, b) => b.score - a.score);
 
-    // Afișare carduri
-    topNews.forEach(news => {
-      const card = document.createElement('div');
-      card.className = "card";
-      card.innerHTML = `
-        <h3>${news.title}</h3>
-        <p><strong>Predicted Impact Score:</strong> ${news.score}</p>
-        <p><strong>Real Impact Score:</strong> ${news.realScore}</p>
-        <p><strong>Feedback:</strong> ${news.feedback}</p>
-      `;
-      container.appendChild(card);
-    });
+      topNews.forEach(news => {
+        const card = document.createElement('div');
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${news.title}</h3>
+          <p><strong>Predicted Impact Score:</strong> ${news.score}</p>
+          <p><strong>Real Impact Score:</strong> ${news.realScore}</p>
+          <p><strong>Feedback:</strong> <span class="feedback-${news.feedback}">${news.feedback}</span></p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Prima generare la încărcare
+    generateRealScores();
+
+    // Re-generate când dai click pe buton
+    refreshBtn.addEventListener('click', generateRealScores);
   </script>
 </body>
 </html>
+
